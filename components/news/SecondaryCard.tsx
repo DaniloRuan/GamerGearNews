@@ -1,7 +1,7 @@
 import { Clock } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Article } from "@/types/article";
+import { Article } from "@/app/types/article";
 import { CategoryBadge } from "@/components/ui/CategoryBadge";
 
 interface SecondaryCardProps {
