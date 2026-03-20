@@ -9,7 +9,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { Search, Menu, X, Gamepad2 } from "lucide-react";
+import { Search, Menu, X, Gamepad2, GamepadDirectional } from "lucide-react";
 
 const NAV_LINKS = ["Notícias", "Reviews", "Hardware", "Esports", "Guias"];
 
@@ -28,7 +28,7 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16 gap-4">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 shrink-0">
-          <Gamepad2 className="w-7 h-7 text-[#FF3A20]" />
+          <GamepadDirectional className="w-7 h-7 text-[#FF3A20]" />
           <span className="font-black text-2xl tracking-tighter text-white">
             GamerGears<span className="text-[#FF3A20]">News</span>
           </span>
@@ -84,7 +84,11 @@ export function Navbar() {
             className="lg:hidden h-9 w-9 text-[#A0A0C0]"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
           </Button>
         </div>
       </div>
