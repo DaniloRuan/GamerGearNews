@@ -1,11 +1,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 
-import {
-  getArticleBySlug,
-  getRelatedArticles,
-  getAllSlugs,
-} from "@/app/data/articles";
+import { getArticleBySlug, getRelatedArticles, getAllSlugs } from "@/lib/api";
 import { generateArticleMetadata, generateArticleJsonLd } from "@/app/lib/seo";
 
 import { Navbar } from "@/components/navbar/Navbar";
@@ -18,42 +14,39 @@ import { ArticleShare } from "@/components/article/ArticleShare";
 import { ArticleSidebar } from "@/components/article/ArticleSidebar";
 import { RelatedArticles } from "@/components/article/RelatedArticles";
 
-// ─── Types ─────────────────────────────────────────────────────────────────────
+// ─── Tipos ────────────────────────────────────────────────────────────────────
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
+type Props = { params: Promise<{ slug: string }> };
 
-// ─── Static generation ─────────────────────────────────────────────────────────
+// ─── SSG — gera todas as páginas em build time ────────────────────────────────
 
 export async function generateStaticParams() {
-  return getAllSlugs().map((slug) => ({ slug }));
+  const slugs = await getAllSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
-// ─── SEO metadata ──────────────────────────────────────────────────────────────
+// ─── SEO ─────────────────────────────────────────────────────────────────────
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
-  if (!article) return { title: "Artigo não encontrado | NivelMax" };
-  return generateArticleMetadata(article);
+  const article = await getArticleBySlug(slug);
+  if (!article) return { title: "Artigo não encontrado | GamerGearNews" };
+  return generateArticleMetadata(article as never);
 }
 
-// ─── Page ──────────────────────────────────────────────────────────────────────
+// ─── Página ───────────────────────────────────────────────────────────────────
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
+
   if (!article) notFound();
 
-  const related = article.relatedIds
-    ? getRelatedArticles(article.relatedIds)
-    : [];
-  const jsonLd = generateArticleJsonLd(article);
+  const related = await getRelatedArticles(article.relatedIds ?? []);
+  const jsonLd = generateArticleJsonLd(article as never);
 
   return (
     <>
-      {/* JSON-LD structured data for Google */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd }}
@@ -61,22 +54,19 @@ export default async function ArticlePage({ params }: Props) {
 
       <div className="min-h-screen bg-[#080812] text-white">
         <ArticleProgress />
-
         <Navbar />
-
-        <ArticleHero article={article} />
+        <ArticleHero article={article as never} />
 
         <div className="max-w-6xl mx-auto px-4 pb-16">
           <div className="flex gap-12 items-start">
             <main className="flex-1 min-w-0 max-w-3xl">
               <ArticleShare title={article.title} slug={article.slug} />
-              <ArticleBody blocks={article.content} />
+              <ArticleBody blocks={article.content ?? []} />
               <ArticleShare title={article.title} slug={article.slug} />
-              <ArticleAuthor author={article.author} />
+              {article.author && <ArticleAuthor author={article.author} />}
               <RelatedArticles articles={related} />
             </main>
-
-            <ArticleSidebar blocks={article.content} />
+            <ArticleSidebar blocks={article.content ?? []} />
           </div>
         </div>
 
