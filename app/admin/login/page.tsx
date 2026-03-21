@@ -71,7 +71,7 @@ export default function LoginPage() {
               <input
                 type="email"
                 className={inputCls}
-                placeholder="admin@gamergarnews.com"
+                placeholder="Login"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -97,7 +97,11 @@ export default function LoginPage() {
                   onClick={() => setShow(!show)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#606080] hover:text-white transition-colors"
                 >
-                  {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {show ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             </div>
@@ -113,10 +117,13 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 py-3 bg-[#FF3A20] hover:bg-[#E02A10] disabled:opacity-60 text-white text-sm font-black rounded-md transition-colors"
             >
-              {loading
-                ? <><Loader2 className="w-4 h-4 animate-spin" /> Entrando...</>
-                : "Entrar"
-              }
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Entrando...
+                </>
+              ) : (
+                "Entrar"
+              )}
             </button>
           </form>
         </div>
