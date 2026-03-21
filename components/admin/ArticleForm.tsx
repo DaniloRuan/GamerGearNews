@@ -71,61 +71,169 @@ function BlockEditor({ blocks, onChange }: { blocks: Block[]; onChange: (b: Bloc
   return (
     <div className="space-y-3">
       {blocks.map((block, i) => (
-        <div key={String(block.id)} className="bg-[#080812] border border-[#1E1E3A] rounded-xl p-4 group">
+        <div
+          key={String(block.id)}
+          className="bg-[#080812] border border-[#1E1E3A] rounded-xl p-4 group"
+        >
           <div className="flex items-center justify-between mb-3">
             <span className="text-[10px] font-black uppercase tracking-widest text-[#FF3A20]">
-              {String(block.type)}{block.type === "heading" ? ` H${block.level}` : ""}
+              {String(block.type)}
+              {block.type === "heading" ? ` H${block.level}` : ""}
             </span>
             <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button onClick={() => move(block.id, "up")} disabled={i === 0} className="p-1 text-[#606080] hover:text-white disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
-              <button onClick={() => move(block.id, "down")} disabled={i === blocks.length - 1} className="p-1 text-[#606080] hover:text-white disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
-              <button onClick={() => remove(block.id)} className="p-1 text-[#606080] hover:text-red-400"><Trash2 className="w-3.5 h-3.5" /></button>
+              <button
+                onClick={() => move(block.id, "up")}
+                disabled={i === 0}
+                className="p-1 text-[#606080] hover:text-white disabled:opacity-30"
+              >
+                <ChevronUp className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => move(block.id, "down")}
+                disabled={i === blocks.length - 1}
+                className="p-1 text-[#606080] hover:text-white disabled:opacity-30"
+              >
+                <ChevronDown className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => remove(block.id)}
+                className="p-1 text-[#606080] hover:text-red-400"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
 
           {block.type === "paragraph" && (
-            <textarea rows={3} className={input} value={String(block.text ?? "")} onChange={(e) => update(block.id, { text: e.target.value })} placeholder="Texto do parágrafo..." />
+            <textarea
+              rows={3}
+              className={input}
+              value={String(block.text ?? "")}
+              onChange={(e) => update(block.id, { text: e.target.value })}
+              placeholder="Texto do parágrafo..."
+            />
           )}
           {block.type === "heading" && (
             <div className="flex gap-2">
-              <select className={`${select} w-20 shrink-0`} value={Number(block.level)} onChange={(e) => update(block.id, { level: Number(e.target.value) })}>
-                <option value={2}>H2</option><option value={3}>H3</option>
+              <select
+                className={`${select} w-20 shrink-0`}
+                value={Number(block.level)}
+                onChange={(e) =>
+                  update(block.id, { level: Number(e.target.value) })
+                }
+              >
+                <option value={2}>H2</option>
+                <option value={3}>H3</option>
               </select>
-              <input className={input} value={String(block.text ?? "")} onChange={(e) => update(block.id, { text: e.target.value })} placeholder="Título..." />
+              <input
+                className={input}
+                value={String(block.text ?? "")}
+                onChange={(e) => update(block.id, { text: e.target.value })}
+                placeholder="Título..."
+              />
             </div>
           )}
           {block.type === "quote" && (
             <div className="space-y-2">
-              <textarea rows={2} className={input} value={String(block.text ?? "")} onChange={(e) => update(block.id, { text: e.target.value })} placeholder="Texto da citação..." />
-              <input className={input} value={String(block.attribution ?? "")} onChange={(e) => update(block.id, { attribution: e.target.value })} placeholder="Atribuição (Nome, Cargo)" />
+              <textarea
+                rows={2}
+                className={input}
+                value={String(block.text ?? "")}
+                onChange={(e) => update(block.id, { text: e.target.value })}
+                placeholder="Texto da citação..."
+              />
+              <input
+                className={input}
+                value={String(block.attribution ?? "")}
+                onChange={(e) =>
+                  update(block.id, { attribution: e.target.value })
+                }
+                placeholder="Atribuição (Nome, Cargo)"
+              />
             </div>
           )}
           {block.type === "list" && (
             <div className="space-y-2">
               {(block.items as string[]).map((item, j) => (
                 <div key={j} className="flex gap-2">
-                  <input className={`${input} flex-1`} value={item} onChange={(e) => { const items = [...(block.items as string[])]; items[j] = e.target.value; update(block.id, { items }); }} placeholder={`Item ${j + 1}`} />
-                  <button onClick={() => update(block.id, { items: (block.items as string[]).filter((_, k) => k !== j) })} className="p-2 text-[#606080] hover:text-red-400"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <input
+                    className={`${input} flex-1`}
+                    value={item}
+                    onChange={(e) => {
+                      const items = [...(block.items as string[])];
+                      items[j] = e.target.value;
+                      update(block.id, { items });
+                    }}
+                    placeholder={`Item ${j + 1}`}
+                  />
+                  <button
+                    onClick={() =>
+                      update(block.id, {
+                        items: (block.items as string[]).filter(
+                          (_, k) => k !== j,
+                        ),
+                      })
+                    }
+                    className="p-2 text-[#606080] hover:text-red-400"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               ))}
-              <button onClick={() => update(block.id, { items: [...(block.items as string[]), ""] })} className="text-xs text-[#FF3A20] font-semibold flex items-center gap-1"><Plus className="w-3 h-3" />Adicionar item</button>
+              <button
+                onClick={() =>
+                  update(block.id, {
+                    items: [...(block.items as string[]), ""],
+                  })
+                }
+                className="text-xs text-[#FF3A20] font-semibold flex items-center gap-1"
+              >
+                <Plus className="w-3 h-3" />
+                Adicionar item
+              </button>
             </div>
           )}
           {block.type === "image" && (
             <div className="space-y-2">
-              <input className={input} value={String(block.src ?? "")} onChange={(e) => update(block.id, { src: e.target.value })} placeholder="URL da imagem (https://...)" />
-              {block.src && <img src={String(block.src)} alt="" className="w-full h-32 object-cover rounded-md" />}
-              <input className={input} value={String(block.caption ?? "")} onChange={(e) => update(block.id, { caption: e.target.value })} placeholder="Legenda..." />
+              <input
+                className={input}
+                value={String(block.src ?? "")}
+                onChange={(e) => update(block.id, { src: e.target.value })}
+                placeholder="URL da imagem (https://...)"
+              />
+              {!!block.src && (
+                <img
+                  src={String(block.src)}
+                  alt=""
+                  className="w-full h-32 object-cover rounded-md"
+                />
+              )}
+              <input
+                className={input}
+                value={String(block.caption ?? "")}
+                onChange={(e) => update(block.id, { caption: e.target.value })}
+                placeholder="Legenda..."
+              />
             </div>
           )}
           {block.type === "callout" && (
             <div className="space-y-2">
-              <select className={select} value={String(block.variant)} onChange={(e) => update(block.id, { variant: e.target.value })}>
+              <select
+                className={select}
+                value={String(block.variant)}
+                onChange={(e) => update(block.id, { variant: e.target.value })}
+              >
                 <option value="hot">🔥 Hot</option>
                 <option value="info">💡 Info</option>
                 <option value="warning">⚠️ Warning</option>
               </select>
-              <textarea rows={2} className={input} value={String(block.text ?? "")} onChange={(e) => update(block.id, { text: e.target.value })} placeholder="Texto do destaque..." />
+              <textarea
+                rows={2}
+                className={input}
+                value={String(block.text ?? "")}
+                onChange={(e) => update(block.id, { text: e.target.value })}
+                placeholder="Texto do destaque..."
+              />
             </div>
           )}
         </div>
@@ -133,9 +241,21 @@ function BlockEditor({ blocks, onChange }: { blocks: Block[]; onChange: (b: Bloc
 
       {/* Picker de blocos */}
       <div className="grid grid-cols-3 gap-2">
-        {[["paragraph","Parágrafo"],["heading","Título"],["quote","Citação"],["list","Lista"],["image","Imagem"],["callout","Destaque"]].map(([type, label]) => (
-          <button key={type} onClick={() => add(type)} className="flex items-center justify-center gap-1.5 py-2 bg-[#0D0D1A] border border-dashed border-[#2D2D4E] rounded-lg text-xs font-semibold text-[#606080] hover:text-[#FF3A20] hover:border-[#FF3A20]/40 transition-all">
-            <Plus className="w-3 h-3" />{label}
+        {[
+          ["paragraph", "Parágrafo"],
+          ["heading", "Título"],
+          ["quote", "Citação"],
+          ["list", "Lista"],
+          ["image", "Imagem"],
+          ["callout", "Destaque"],
+        ].map(([type, label]) => (
+          <button
+            key={type}
+            onClick={() => add(type)}
+            className="flex items-center justify-center gap-1.5 py-2 bg-[#0D0D1A] border border-dashed border-[#2D2D4E] rounded-lg text-xs font-semibold text-[#606080] hover:text-[#FF3A20] hover:border-[#FF3A20]/40 transition-all"
+          >
+            <Plus className="w-3 h-3" />
+            {label}
           </button>
         ))}
       </div>
