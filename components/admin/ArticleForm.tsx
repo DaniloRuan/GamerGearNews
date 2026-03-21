@@ -114,7 +114,7 @@ function BlockEditor({ blocks, onChange }: { blocks: Block[]; onChange: (b: Bloc
             />
           )}
           {block.type === "heading" && (
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2">
               <select
                 className={`${select} w-20 shrink-0`}
                 value={Number(block.level)}
